@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "academic",
-
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+    'name': "Academic Information System",
 
     'description': """
-        Long description of module's purpose
+        Academic Information System
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "auliayf@gmail.com",
+    'website': "https://github.com/AuliaYF/",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
+    'category': 'Education',
+    'version': '1.0',
 
     # any module necessary for this one to work correctly
     'depends': ['base'],
+    'application': True,
+    'auto_install': False,
+    'installable': True,
 
     # always loaded
     'data': [
