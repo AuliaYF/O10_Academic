@@ -29,7 +29,7 @@ class Session(models.Model):
     duration = fields.Float(digits=(6, 2), help='Duration in days',)
     end_date = fields.Date(string="End Date", store=True, compute="_get_end_date", inverse="_set_end_date")
     seats = fields.Integer(string='Number of seats',)
-    attendee_ids = fields.Many2many("res.partner", string="Attendees",)
+    attendee_ids = fields.Many2many("res.partner", string="Attendees", domain=[("is_instructor", "=", False)],)
     taken_seats = fields.Float(string="Taken seats", compute="_compute_taken_seats",)
     color = fields.Integer()
     is_active = fields.Boolean(default=True,)
