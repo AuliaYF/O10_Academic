@@ -134,8 +134,8 @@
                 </form>
             </field>
         </record>
-
-        <record id="action_session_search" model="ir.ui.view">
+        
+         <record id="action_session_search" model="ir.ui.view">
             <field name="name">session.search</field>
             <field name="model">academic.session</field>
             <field name="arch" type="xml">
