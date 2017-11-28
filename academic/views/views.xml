@@ -1,59 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
-    <!-- explicit list view definition -->
-    <!--
-    <record model="ir.ui.view" id="academic.list">
-      <field name="name">academic list</field>
-      <field name="model">academic.academic</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
-    -->
+    <data>
 
-    <!-- actions opening views on models -->
-    <!--
-    <record model="ir.actions.act_window" id="academic.action_window">
-      <field name="name">academic window</field>
-      <field name="res_model">academic.academic</field>
-      <field name="view_mode">tree,form</field>
-    </record>
-    -->
+        <!-- Inherit Form View to Modify it -->
+        <record id="action_partner_form" model="ir.ui.view">
+            <field name="name">partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Sessions">
+                        <group>
+                            <field name="is_instructor"/>
+                            <field name="session_ids"/>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
 
-    <!-- server action to the one above -->
-    <!--
-    <record model="ir.actions.server" id="academic.action_server">
-      <field name="name">academic server</field>
-      <field name="model_id" ref="model_academic_academic"/>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": self._name,
-        }
-      </field>
-    </record>
-    -->
+        <record id="action_contact_list" model="ir.actions.act_window">
+            <field name="name">Contacts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-    <!-- Top menu item -->
-    <!--
-    <menuitem name="academic" id="academic.menu_root"/>
-    -->
-    <!-- menu categories -->
-    <!--
-    <menuitem name="Menu 1" id="academic.menu_1" parent="academic.menu_root"/>
-    <menuitem name="Menu 2" id="academic.menu_2" parent="academic.menu_root"/>
-    -->
-    <!-- actions -->
-    <!--
-    <menuitem name="List" id="academic.menu_1_list" parent="academic.menu_1"
-              action="academic.action_window"/>
-    <menuitem name="Server to list" id="academic" parent="academic.menu_2"
-              action="academic.action_server"/>
-    -->
-  </data>
+        <record id="action_contact_category_list" model="ir.actions.act_window">
+            <field name="name">Contact Tags</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="res.partner.category" id="academic_contact_category_teacher1">
+            <field name="name">Teacher / Level 1</field>
+        </record>
+
+        <record model="res.partner.category" id="academic_contact_category_teacher2">
+            <field name="name">Teacher / Level 2</field>
+        </record>
+
+        <record id="action_course_form" model="ir.ui.view">
+            <field name="name">course.form</field>
+            <field name="model">academic.course</field>
+            <field name="arch" type="xml">
+                <form string="Course Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="responsible_id"/>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Sessions">
+                                <field name="session_ids">
+                                    <tree string="Registered sessions">
+                                        <field name="name"/>
+                                        <field name="instructor_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_course_search" model="ir.ui.view">
+            <field name="name">course.search</field>
+            <field name="model">academic.course</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <filter name="my_courses" string="My Courses" domain="[('responsible_id', '=', uid)]"/>
+                    <group string="Group By">
+                        <filter name="by_responsible" string="Responsible" context="{'group_by': 'responsible_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_course_tree" model="ir.ui.view">
+            <field name="name">course.tree</field>
+            <field name="model">academic.course</field>
+            <field name="arch" type="xml">
+                <tree string="Course Tree">
+                    <field name="name"/>
+                    <field name="responsible_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_course_list" model="ir.actions.act_window">
+            <field name="name">Courses</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">academic.course</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context" eval="{'search_default_my_courses': 1}"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Create the first course
+                </p>
+            </field>
+        </record>
+
+        <record id="action_session_form" model="ir.ui.view">
+            <field name="name">session.form</field>
+            <field name="model">academic.session</field>
+            <field name="arch" type="xml">
+                <form string="Session Form">
+                    <sheet>
+                        <group>
+                            <group string="General">
+                                <field name="course_id"/>
+                                <field name="name"/>
+                                <field name="instructor_id"/>
+                                <field name="is_active"/>
+                            </group>
+                            <group string="Schedule">
+                                <field name="start_date"/>
+                                <field name="duration"/>
+                                <field name="seats"/>
+                                <field name="taken_seats" widget="progressbar"/>
+                            </group>
+                        </group>
+                        <label for="attendee_ids"/>
+                        <field name="attendee_ids"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_session_tree" model="ir.ui.view">
+            <field name="name">session.tree</field>
+            <field name="model">academic.session</field>
+            <field name="arch" type="xml">
+                <tree string="Session Tree" decoration-info="duration&lt;5" decoration-danger="duration&gt;5">
+                    <field name="name"/>
+                    <field name="course_id"/>
+                    <field name="duration" invisible="1"/>
+                    <field name="taken_seats" widget="progressbar"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_session_calendar" model="ir.ui.view">
+            <field name="name">session.calendar</field>
+            <field name="model">academic.session</field>
+            <field name="arch" type="xml">
+                <calendar string="Session Calendar" date_start="start_date" date_stop="end_date" color="instructor_id">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="action_session_graph" model="ir.ui.view">
+            <field name="name">session.graph</field>
+            <field name="model">academic.session</field>
+            <field name="arch" type="xml">
+                <graph string="Participations by Courses">
+                    <field name="course_id"/>
+                    <field name="attendees_count" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="action_session_kanban" model="ir.ui.view">
+            <field name="name">session.kanban</field>
+            <field name="model">academic.session</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="course_id">
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_{{kanban_getcolor(record.color.raw_value)}}
+                                                oe_kanban_global_click_edit
+                                                oe_semantic_html_override
+                                                oe_kanban_card {{record.group_fancy == 1 ? 'oe_kanban_card_fancy' : ''}}">
+                                <div class="oe_dropdown_kanban">
+                                    <div class="oe_dropdown_toggle">
+                                        <i class="fa fa-bars fa-lg"/>
+                                        <ul class="oe_dropdown_menu">
+                                            <li>
+                                                <a type="delete">Delete</a>
+                                            </li>
+                                            <li>
+                                                <ul class="oe_kanban_color_picker" data-field="color"></ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="oe_clear"></div>
+                                </div>
+                                <div t-attf-class="oe_kanban_content">
+                                    Session name:
+                                    <field name="name"/>
+                                    <br/>
+                                    Start date:
+                                    <field name="start_date"/>
+                                    <br/>
+                                    Duration:
+                                    <field name="duration"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_session_list" model="ir.actions.act_window">
+            <field name="name">Sessions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">academic.session</field>
+            <field name="view_mode">tree,form,calendar,graph,kanban</field>
+        </record>
+
+        <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+        <menuitem id="academic_root" name="Academic"/>
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="academic_menu" name="Academic" parent="academic_root"/>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="academic_course_menu" name="Courses" parent="academic_menu" action="action_course_list"/>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="academic_session_menu" name="Sessions" parent="academic_menu" action="action_session_list"/>
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="academic_configuration_menu" name="Configuration" parent="academic_menu"/>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="academic_configuration_contact_menu" name="Contacts" parent="academic_configuration_menu"
+                  action="action_contact_list"/>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="academic_configuration_contact_tag_menu" name="Contact Tags" parent="academic_configuration_menu"
+                  action="action_contact_category_list"/>
+    </data>
 </odoo>
